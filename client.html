@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+</head>
+<body>
+<script type="text/javascript">
+let baseurl = "http://localhost:3000"
+/*
+//example for err handling. Always assuming ok for simple.
+fetch("http://localhost:3000").then(res=>{
+	if (res.ok) {
+		res.text().then(data=>{
+			console.log(data)
+	})} else {
+	console.log("response err:", res.status);
+}}, function(e) {
+	console.log("fetch failed.", e);
+});*/
+let id, code = -1;
+var fetchFirstNPC = function(callback){
+	fetch(baseurl).then(res=>{
+		res.text().then(data=>{
+			id = data.split(" ")[0];
+			code = data.split(" ")[1];
+			callback(id,code);
+		})
+	})
+}
+var fetchNPCLoop = function(id,code){
+	fetch(baseurl+"/ask/?id="+id+"&code="+code).then(res=>{
+		res.json().then(data=>{
+			console.log(data.message,data.id,data.code);
+			if (data.message!=="Congratulations!") {
+				fetchNPCLoop(data.id,data.code);
+			}
+		})
+	})
+}
+fetchFirstNPC(fetchNPCLoop);
+</script>
+</body>
+</html>

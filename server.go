@@ -23,11 +23,13 @@ type Message struct {
 }
 
 func index(rw http.ResponseWriter, req *http.Request) {
+	rw.Header().Set("Access-Control-Allow-Origin", "*")
 	fmt.Fprintf(rw, "%v %s", g.Cs[0].Id, g.Cs[0].Code)
 }
 
 func ask(rw http.ResponseWriter, req *http.Request) {
 	rw.Header().Set("Content-Type", "application/json;charset=utf-8")
+	rw.Header().Set("Access-Control-Allow-Origin", "*")
 	req.ParseForm()
 	id := req.Form.Get("id")
 	code := req.Form.Get("code")
