@@ -23,11 +23,13 @@ type Message struct {
 }
 
 func index(rw http.ResponseWriter, req *http.Request) {
+	fmt.Println("Request received.", time.Now())
 	rw.Header().Set("Access-Control-Allow-Origin", "*")
 	fmt.Fprintf(rw, "%v %s", g.Cs[0].Id, g.Cs[0].Code)
 }
 
 func ask(rw http.ResponseWriter, req *http.Request) {
+	fmt.Println("Request received.", time.Now())
 	rw.Header().Set("Content-Type", "application/json;charset=utf-8")
 	rw.Header().Set("Access-Control-Allow-Origin", "*")
 	req.ParseForm()
@@ -47,7 +49,7 @@ func ask(rw http.ResponseWriter, req *http.Request) {
 		fmt.Fprint(rw, string(bytes))
 		return
 	}
-	fmt.Println(npc.Code, code, npc.Code == code)
+	// fmt.Println(npc.Code, code, npc.Code == code)
 	if npc.Code == code {
 		if npc.IsLast {
 			m = Message{
@@ -127,20 +129,21 @@ func Update() {
 		newGame := Game{}
 		newGame.Init()
 		g = newGame
-		for i, npc := range g.Cs {
-			fmt.Println(i, npc.Id, npc.NextId, npc.Code, npc.IsFirst, npc.IsLast)
-		}
+		// for i, npc := range g.Cs {
+		// 	fmt.Println(i, npc.Id, npc.NextId, npc.Code, npc.IsFirst, npc.IsLast)
+		// }
 		Update()
 	})
 }
 
 func main() {
 	g.Init()
-	for i, npc := range g.Cs {
-		fmt.Println(i, npc.Id, npc.NextId, npc.Code, npc.IsFirst, npc.IsLast)
-	}
+	// for i, npc := range g.Cs {
+	// 	fmt.Println(i, npc.Id, npc.NextId, npc.Code, npc.IsFirst, npc.IsLast)
+	// }
 	Update()
 	http.HandleFunc("/", index)
 	http.HandleFunc("/ask/", ask)
+	fmt.Println("Running on port 3000...")
 	log.Fatal(http.ListenAndServe(":3000", nil))
 }

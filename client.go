@@ -8,6 +8,7 @@ import (
 	neturl "net/url"
 	"strconv"
 	"strings"
+	"time"
 )
 
 type Message struct {
@@ -30,8 +31,8 @@ func getMessage(url string) Message {
 	return m
 }
 
-func main() {
-	baseurl := "http://localhost:3000"
+func do() {
+	baseurl := "http://10.10.65.110:3000"
 	str := getContent(baseurl)
 	nid, _ := strconv.Atoi(strings.Split(str, " ")[0])
 	m := Message{
@@ -47,4 +48,11 @@ func main() {
 		m = getMessage(url)
 		fmt.Println(m.Message)
 	}
+}
+
+func main() {
+	for i := 0; i < 10; i++ {
+		go do()
+	}
+	time.Sleep(time.Minute)
 }
